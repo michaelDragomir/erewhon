@@ -62,7 +62,10 @@ exports.getBookByQuery = async (req, res, next) => {
 		const pipeline = [
 			{
 				$match: {
-					$or: [{ title: q }, { author: q }],
+					$or: [
+						{ title: { $regex: q, $options: 'i' } },
+						{ author: { $regex: q, $options: 'i' } },
+					],
 				},
 			},
 		];
