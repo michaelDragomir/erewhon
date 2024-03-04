@@ -57,23 +57,19 @@ exports.getBookById = async (req, res, next) => {
 
 exports.getBookByQuery = async (req, res, next) => {
 	const { q } = req.query;
-	console.log(q, '!!!!!!');
+	console.log(q, 'QUERY');
 	try {
-		book.find();
-		book.match();
+		const pipeline = [
+			{
+				$match: {
+					title: q,
+					author: q,
+				},
+			},
+		];
 
-		if (title) {
-			searchCriteria.title = title;
-		}
-		if (author) {
-			searchCriteria.author = author;
-		}
-		//get all the books check if author or book title..
-
-		// Use the search criteria to find matching items
-		const foundItems = await Item.find(searchCriteria);
-		res.json(foundItems);
-		obj.title = title;
+		const items = await Book.aggregate(pipeline);
+		res.status(200).json({ items });
 	} catch (error) {
 		console.error('Error:', error);
 		res.status(500).json({ error: 'Internal Server Error' });
