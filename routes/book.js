@@ -2,6 +2,8 @@ const express = require('express');
 const booksController = require('../controllers/books');
 
 const router = express.Router();
+
+// api routes
 router.get('/search', booksController.getBookByQuery);
 router.get('/', booksController.getBooks);
 router.get('/stats', booksController.getBookStats);

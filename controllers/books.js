@@ -1,131 +1,112 @@
 const Book = require('../models/book');
 const mongoose = require('mongoose');
-const { validationResult } = require('express-validator');
 
-exports.getBooks = (req, res, next) => {
-	Book.find()
-		.limit(10)
-		.select('title author publicationYear _id')
-		.exec()
-		.then((result) => {
-			console.log(result);
-			res.status(200).json(result);
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).json({ error: err });
-		});
+exports.getBooks = async (req, res, next) => {
+	try {
+		const allBooks = await Book.find()
+			.limit(10)
+			.select('title author publicationYear _id');
+
+		res.status(200).json(allBooks);
+	} catch (error) {
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
 };
 
-exports.getBookStats = (req, res, next) => {
-	Book.find()
-		.exec()
-		.then((result) => {
-			const response = {
-				totalBookCount: result.length,
-				books: result.reduce((acc, obj) => {
-					acc.earliestPublishingYear =
-						acc.earliestPublishingYear === undefined
-							? obj.publicationYear
-							: Math.min(acc.earliestPublishingYear, obj.publicationYear);
+exports.getBookStats = async (req, res, next) => {
+	try {
+		const bookStats = await Book.find();
+		const response = {
+			totalBookCount: bookStats.length,
+			books: bookStats.reduce((acc, obj) => {
+				acc.earliestPublishingYear =
+					acc.earliestPublishingYear === undefined
+						? obj.publicationYear
+						: Math.min(acc.earliestPublishingYear, obj.publicationYear);
 
-					acc.latestPublishingYear =
-						acc.latestPublishingYear === undefined
-							? obj.publicationYear
-							: Math.max(acc.latestPublishingYear, obj.publicationYear);
+				acc.latestPublishingYear =
+					acc.latestPublishingYear === undefined
+						? obj.publicationYear
+						: Math.max(acc.latestPublishingYear, obj.publicationYear);
 
-					return acc;
-				}, {}),
-			};
-			res.status(200).json(response);
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).json({ error: err });
-		});
+				return acc;
+			}, {}),
+		};
+		res.status(200).json(response);
+	} catch (error) {
+		res.status(500).json({ error: error });
+	}
 };
 
-exports.getBookById = (req, res, next) => {
-	const id = req.params.bookId;
-	Book.findById(id)
-		.exec()
-		.then((book) => {
-			console.log('from database', book);
-			if (book) {
-				res.status(200).json(book);
-			} else {
-				res.status(404).json({ message: 'item not found' });
-			}
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).json({ error: err });
-		});
+exports.getBookById = async (req, res, next) => {
+	try {
+		const id = req.params.bookId;
+		const book = await Book.findById(id).select(
+			'title author publicationYear _id'
+		);
+
+		if (book) {
+			res.status(200).json(book);
+		} else {
+			res.status(404).json({ message: 'book not found' });
+		}
+	} catch (error) {
+		res.status(500).json({ error: error });
+	}
 };
 
 exports.getBookByQuery = async (req, res, next) => {
 	const { q } = req.query;
 	console.log(q, '!!!!!!');
-	// try {
-    // book.find()
-    // book.match()
+	try {
+		book.find();
+		book.match();
 
-	if (title) {
-		searchCriteria.title = title;
-	}
-	if (author) {
-		searchCriteria.author = author;
-	}
-  //get all the books check if author or book title..
+		if (title) {
+			searchCriteria.title = title;
+		}
+		if (author) {
+			searchCriteria.author = author;
+		}
+		//get all the books check if author or book title..
 
-	// Use the search criteria to find matching items
-	const foundItems = await Item.find(searchCriteria);
-	res.json(foundItems);
-	obj.title = title;
+		// Use the search criteria to find matching items
+		const foundItems = await Item.find(searchCriteria);
+		res.json(foundItems);
+		obj.title = title;
 	} catch (error) {
 		console.error('Error:', error);
 		res.status(500).json({ error: 'Internal Server Error' });
 	}
 };
 
-exports.postAddBook = (req, res, next) => {
-	const errors = validationResult(req);
-
-	if (!errors.isEmpty()) {
-		return res.status(400).json({ errors: errors.array() });
-	}
-	const book = new Book({
-		_id: new mongoose.Types.ObjectId(),
-		title: req.body.title,
-		author: req.body.author,
-		publicationYear: req.body.publicationYear,
-	});
-	book
-		.save()
-		.then((result) => {
-			res.status(201).json({
-				message: 'Created book successfully',
-				createBook: result,
-			});
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).json({
-				error: err,
-			});
+exports.postAddBook = async (req, res, next) => {
+	try {
+		const book = new Book({
+			_id: new mongoose.Types.ObjectId(),
+			title: req.body.title,
+			author: req.body.author,
+			publicationYear: req.body.publicationYear,
 		});
+
+		res.status(201).json({
+			message: 'Created book successfully',
+			createBook: book,
+		});
+		await book.save();
+	} catch (error) {
+		res.status(500).json({
+			error: error,
+		});
+	}
 };
 
+// the assgnment called for using PUT to make parial updates. Patch would be more ideal for partial updates.
 exports.putBookUpdateById = async (req, res, next) => {
 	try {
 		const id = req.params.bookId;
 		const bookFields = req.body;
 		const currentBook = await Book.findById(id);
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			return res.status(400).json({ errors: errors.array() });
-		}
 
 		if (!currentBook) {
 			res.status(404).json({ message: 'item not found' });
@@ -141,18 +122,19 @@ exports.putBookUpdateById = async (req, res, next) => {
 	}
 };
 
-exports.deleteBookById = (req, res, next) => {
-	const id = req.params.bookId;
-	Book.deleteOne({ _id: id })
-		.exec()
-		.then((result) => {
-			console.log(result);
+exports.deleteBookById = async (req, res, next) => {
+	try {
+		const id = req.params.bookId;
+		const book = await Book.deleteOne({ _id: id });
+
+		if (book) {
 			res.status(200).json({
-				message: 'Product deleted successfully',
+				message: 'Book deleted successfully',
 			});
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).json({ error: err });
-		});
+		} else {
+			res.status(404).json({ message: 'book not found.  Nothing to delete' });
+		}
+	} catch (error) {
+		res.status(500).json({ error: error });
+	}
 };
