@@ -55,6 +55,7 @@ exports.getBookById = async (req, res, next) => {
 	}
 };
 
+//getting an empty array
 exports.getBookByQuery = async (req, res, next) => {
 	const { q } = req.query;
 	console.log(q, 'QUERY');
@@ -62,8 +63,7 @@ exports.getBookByQuery = async (req, res, next) => {
 		const pipeline = [
 			{
 				$match: {
-					title: q,
-					author: q,
+					$or: [{ title: q }, { author: q }],
 				},
 			},
 		];
