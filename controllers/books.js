@@ -2,10 +2,13 @@ const Book = require('../models/book');
 const mongoose = require('mongoose');
 
 exports.getAllBooks = async (req, res, next) => {
+	const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+	const itemsPerPage = parseInt(req.query.pageSize) || 5; // Default to 5 items per page
 	try {
-		const allBooks = await Book.find().select(
-			'title author publicationYear _id'
-		);
+		const allBooks = await Book.find()
+			.select('title author publicationYear _id')
+			.skip((page - 1) * itemsPerPage)
+			.limit(itemsPerPage);
 
 		res.status(200).json(allBooks);
 	} catch (error) {
