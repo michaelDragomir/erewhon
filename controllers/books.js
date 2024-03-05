@@ -21,7 +21,10 @@ exports.getBookStats = async (req, res, next) => {
 		const bookStats = await Book.find();
 		const response = {
 			totalBookCount: bookStats.length,
+			// returns an object with earliert/latest year.
 			books: bookStats.reduce((acc, obj) => {
+				console.log(obj, '!!!!');
+				console.log(acc, 'ACC');
 				acc.earliestPublishingYear =
 					acc.earliestPublishingYear === undefined
 						? obj.publicationYear
@@ -61,6 +64,7 @@ exports.getBookById = async (req, res, next) => {
 exports.getBookByQuery = async (req, res, next) => {
 	const { q } = req.query;
 	try {
+		// this aggregation pipeline is handled by mongo.  Checks against the database that match the specified conditions.
 		const bookPipeline = [
 			{
 				$match: {

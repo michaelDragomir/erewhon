@@ -3,7 +3,7 @@ const booksController = require('../controllers/books');
 
 const router = express.Router();
 
-// api routes
+// API routes
 router.get('/search', booksController.getBookByQuery);
 router.get('/', booksController.getAllBooks);
 router.get('/stats', booksController.getBookStats);
