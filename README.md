@@ -28,7 +28,11 @@ cd erewhonCaseStudy
 
 ```sh
 npm install
+
+
 ```
+
+### Before running the app you need to make sure you have a `MongoDB Atlas Account or Local MongoDB Server`
 
 ## Running the Application
 
