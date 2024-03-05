@@ -59,7 +59,7 @@ exports.getBookByQuery = async (req, res, next) => {
 	const { q } = req.query;
 	console.log(q, 'QUERY');
 	try {
-		const pipeline = [
+		const bookPipeline = [
 			{
 				$match: {
 					$or: [
@@ -70,7 +70,7 @@ exports.getBookByQuery = async (req, res, next) => {
 			},
 		];
 
-		const items = await Book.aggregate(pipeline);
+		const items = await Book.aggregate(bookPipeline);
 		res.status(200).json({ items });
 	} catch (error) {
 		console.error('Error:', error);
