@@ -5,7 +5,7 @@ const router = express.Router();
 
 // api routes
 router.get('/search', booksController.getBookByQuery);
-router.get('/', booksController.getBooks);
+router.get('/', booksController.getAllBooks);
 router.get('/stats', booksController.getBookStats);
 router.get('/:bookId', booksController.getBookById);
 router.post('/', booksController.postAddBook);

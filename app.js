@@ -25,6 +25,8 @@ app.use(bodyParser.json());
 
 app.use('/books', bookRoutes);
 
+app.use(errorController.get200);
+
 app.use(errorController.get404);
 
 app.use(errorController.get500);

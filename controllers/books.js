@@ -1,11 +1,11 @@
 const Book = require('../models/book');
 const mongoose = require('mongoose');
 
-exports.getBooks = async (req, res, next) => {
+exports.getAllBooks = async (req, res, next) => {
 	try {
-		const allBooks = await Book.find()
-			.limit(10)
-			.select('title author publicationYear _id');
+		const allBooks = await Book.find().select(
+			'title author publicationYear _id'
+		);
 
 		res.status(200).json(allBooks);
 	} catch (error) {
