@@ -7,8 +7,8 @@ exports.getAllBooks = async (req, res, next) => {
 	try {
 		const allBooks = await Book.find()
 			.select('title author publicationYear _id')
-			.skip((page - 1) * itemsPerPage)
-			.limit(itemsPerPage);
+			.skip((page - 1) * itemsPerPage);
+		// .limit(itemsPerPage);
 
 		res.status(200).json(allBooks);
 	} catch (error) {
@@ -23,8 +23,6 @@ exports.getBookStats = async (req, res, next) => {
 			totalBookCount: bookStats.length,
 			// returns an object with earliert/latest year.
 			books: bookStats.reduce((acc, obj) => {
-				console.log(obj, '!!!!');
-				console.log(acc, 'ACC');
 				acc.earliestPublishingYear =
 					acc.earliestPublishingYear === undefined
 						? obj.publicationYear

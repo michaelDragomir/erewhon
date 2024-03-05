@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
 const stringValidator = (value) => {
-	if (typeof value !== String) {
+	if (typeof value !== 'string') {
 		throw new Error('Must be a string');
 	}
 };
 
 const numberValidator = (value) => {
-	if (typeof value !== Number) {
+	if (typeof value !== 'number') {
 		throw new Error('Must be a number');
 	}
 };
