@@ -80,6 +80,7 @@ exports.getBookByQuery = async (req, res, next) => {
 };
 
 exports.postAddBook = async (req, res, next) => {
+	console.log('REQ.BODY', req.body);
 	try {
 		const book = new Book({
 			_id: new mongoose.Types.ObjectId(),
@@ -88,11 +89,12 @@ exports.postAddBook = async (req, res, next) => {
 			publicationYear: req.body.publicationYear,
 		});
 
+		await book.save();
+
 		res.status(201).json({
 			message: 'Created book successfully',
 			createBook: book,
 		});
-		await book.save();
 	} catch (error) {
 		res.status(500).json({
 			error: error,
