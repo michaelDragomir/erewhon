@@ -46,7 +46,8 @@ server is running on http://localhost:8080.
 
 ## API endpoints
 
-- http://localhost:8080/books -> this fetches all the books.
+- http://localhost:8080/books -> this fetches all the books. An example for
+  pagination is: http://localhost:8080/books?page=1&pageSize=5
 
 - http://localhost:8080/books/:bookId -> this fetches a specific book based on
   id. Replace ':bookId' with a book id.
