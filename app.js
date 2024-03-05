@@ -10,7 +10,7 @@ const errorController = require('./controllers/error');
 
 mongoose
 	.connect(
-		`mongodb+srv://michaeldragomir1:dYQW1OQR9xeqECIX@erewhoncasestudy.w1h7vkw.mongodb.net/`
+		`mongodb+srv://michaeldragomir1:${process.env.MONGO_ATLAS_PW}@erewhoncasestudy.w1h7vkw.mongodb.net/`
 	)
 	.then(() => {
 		console.log('Connected to MongoDB');
