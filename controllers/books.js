@@ -57,7 +57,6 @@ exports.getBookById = async (req, res, next) => {
 
 exports.getBookByQuery = async (req, res, next) => {
 	const { q } = req.query;
-	console.log(q, 'QUERY');
 	try {
 		const bookPipeline = [
 			{
@@ -73,7 +72,6 @@ exports.getBookByQuery = async (req, res, next) => {
 		const items = await Book.aggregate(bookPipeline);
 		res.status(200).json({ items });
 	} catch (error) {
-		console.error('Error:', error);
 		res.status(500).json({ error: 'Internal Server Error' });
 	}
 };
