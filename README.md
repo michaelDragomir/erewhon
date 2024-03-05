@@ -32,7 +32,9 @@ npm install
 
 ```
 
-#### Before running the app you need to make sure you have a MongoDB Atlas Account or Local MongoDB Server
+#### Before running the app you need to make sure you have a MongoDB Atlas Account or Local MongoDB Server.
+
+#### You need to replace my mongo uri with your mongo uri in the `app.js` file.
 
 ## Running the Application
 
